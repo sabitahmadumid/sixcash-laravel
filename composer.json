@@ -37,7 +37,6 @@
     "autoload-dev": {
         "psr-4": {
             "SabitAhmad\\SixCash\\Tests\\": "tests/",
-            "Workbench\\App\\": "workbench/app/"
         }
     },
     "scripts": {

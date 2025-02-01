@@ -6,6 +6,7 @@ use Carbon\Carbon;
 use Exception;
 use Illuminate\Support\Facades\Http;
 use SabitAhmad\SixCash\Exceptions\MerchantNotFoundException;
+use SabitAhmad\SixCash\Exceptions\PaymentVerificationException;
 
 class SixCash {
 
