@@ -8,8 +8,8 @@ it('creates payment order', function () {
     Http::fake([
         'api.sixcash.com/api/v1/create-payment-order' => Http::response([
             'status' => 'payment_created',
-            'redirect_url' => 'https://payment.sixcash.com/checkout'
-        ])
+            'redirect_url' => 'https://payment.sixcash.com/checkout',
+        ]),
     ]);
 
     $service = new SixCash(
@@ -26,8 +26,8 @@ it('creates payment order', function () {
 it('throws merchant not found exception', function () {
     Http::fake([
         'api.sixcash.com/api/v1/create-payment-order' => Http::response([
-            'status' => 'merchant_not_found'
-        ])
+            'status' => 'merchant_not_found',
+        ]),
     ]);
 
     $service = new SixCash(

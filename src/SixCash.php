@@ -8,13 +8,15 @@ use Illuminate\Support\Facades\Http;
 use SabitAhmad\SixCash\Exceptions\MerchantNotFoundException;
 use SabitAhmad\SixCash\Exceptions\PaymentVerificationException;
 
-class SixCash {
-
+class SixCash
+{
     protected $baseUrl;
-    protected $publicKey;
-    protected $secretKey;
-    protected $merchantNumber;
 
+    protected $publicKey;
+
+    protected $secretKey;
+
+    protected $merchantNumber;
 
     public function __construct($baseUrl, $publicKey, $secretKey, $merchantNumber)
     {
@@ -33,18 +35,18 @@ class SixCash {
             'public_key' => $this->publicKey,
             'secret_key' => $this->secretKey,
             'merchant_number' => $this->merchantNumber,
-            'amount' => number_format($amount, 2)
+            'amount' => number_format($amount, 2),
         ]);
 
         if ($response->json('status') === 'merchant_not_found') {
-            throw new MerchantNotFoundException();
+            throw new MerchantNotFoundException;
         }
 
         if ($response->json('status') === 'payment_created') {
-            return $response->json('redirect_url') . '&callback=' . urlencode($callbackUrl);
+            return $response->json('redirect_url').'&callback='.urlencode($callbackUrl);
         }
 
-        throw new Exception('Payment creation failed: ' . $response->body());
+        throw new Exception('Payment creation failed: '.$response->body());
     }
 
     public function verifyPayment(string $transactionId): array
@@ -53,7 +55,7 @@ class SixCash {
             'public_key' => $this->publicKey,
             'secret_key' => $this->secretKey,
             'merchant_number' => $this->merchantNumber,
-            'transaction_id' => $transactionId
+            'transaction_id' => $transactionId,
         ]);
 
         if ($response->json('errors')) {
@@ -72,11 +74,10 @@ class SixCash {
             'merchant_id' => $record['merchant_user_id'],
             'user_id' => $record['user_id'],
             'transaction_id' => $record['transaction_id'],
-            'amount' => (float)$record['amount'],
-            'is_paid' => (bool)$record['is_paid'],
+            'amount' => (float) $record['amount'],
+            'is_paid' => (bool) $record['is_paid'],
             'expires_at' => Carbon::parse($record['expired_at']),
-            'created_at' => Carbon::parse($record['created_at'])
+            'created_at' => Carbon::parse($record['created_at']),
         ];
     }
-
 }

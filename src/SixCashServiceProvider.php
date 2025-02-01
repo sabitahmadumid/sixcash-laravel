@@ -2,13 +2,12 @@
 
 namespace SabitAhmad\SixCash;
 
+use SabitAhmad\SixCash\Commands\SixCashCommand;
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
-use SabitAhmad\SixCash\Commands\SixCashCommand;
 
 class SixCashServiceProvider extends PackageServiceProvider
 {
-
     public function configurePackage(Package $package): void
     {
         /*
