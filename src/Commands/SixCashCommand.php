@@ -1,12 +1,12 @@
 <?php
 
-namespace VendorName\Skeleton\Commands;
+namespace SabitAhmad\SixCash\Commands;
 
 use Illuminate\Console\Command;
 
-class SkeletonCommand extends Command
+class SixCashCommand extends Command
 {
-    public $signature = 'skeleton';
+    public $signature = 'sixcash-laravel';
 
     public $description = 'My command';
 

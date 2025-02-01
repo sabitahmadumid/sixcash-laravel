@@ -1,75 +1,150 @@
-# :package_description
+# Unofficial Laravel SDK wrapper for 6Cash payment gateway script
 
-[![Latest Version on Packagist](https://img.shields.io/packagist/v/:vendor_slug/:package_slug.svg?style=flat-square)](https://packagist.org/packages/:vendor_slug/:package_slug)
-[![GitHub Tests Action Status](https://img.shields.io/github/actions/workflow/status/:vendor_slug/:package_slug/run-tests.yml?branch=main&label=tests&style=flat-square)](https://github.com/:vendor_slug/:package_slug/actions?query=workflow%3Arun-tests+branch%3Amain)
-[![GitHub Code Style Action Status](https://img.shields.io/github/actions/workflow/status/:vendor_slug/:package_slug/fix-php-code-style-issues.yml?branch=main&label=code%20style&style=flat-square)](https://github.com/:vendor_slug/:package_slug/actions?query=workflow%3A"Fix+PHP+code+style+issues"+branch%3Amain)
-[![Total Downloads](https://img.shields.io/packagist/dt/:vendor_slug/:package_slug.svg?style=flat-square)](https://packagist.org/packages/:vendor_slug/:package_slug)
-<!--delete-->
----
-This repo can be used to scaffold a Laravel package. Follow these steps to get started:
+# SixCash Laravel Package
 
-1. Press the "Use this template" button at the top of this repo to create a new repo with the contents of this skeleton.
-2. Run "php ./configure.php" to run a script that will replace all placeholders throughout all the files.
-3. Have fun creating your package.
-4. If you need help creating a package, consider picking up our <a href="https://laravelpackage.training">Laravel Package Training</a> video course.
----
-<!--/delete-->
+[![Latest Version](https://img.shields.io/packagist/v/sabitahmad/sixcash-laravel.svg)](https://packagist.org/packages/sabitahmad/sixcash-laravel)
+[![License](https://img.shields.io/packagist/l/sabitahmad/sixcash-laravel.svg)](https://packagist.org/packages/sabitahmad/sixcash-laravel)
+[![Total Downloads](https://img.shields.io/packagist/dt/sabitahmad/sixcash-laravel.svg)](https://packagist.org/packages/sabitahmad/sixcash-laravel)
+
 This is where your description should go. Limit it to a paragraph or two. Consider adding a small example.
 
-## Support us
+A Laravel package for seamless integration with the **SixCash Payment Gateway**. This package provides an easy-to-use interface for creating payment orders and verifying transactions.
 
-[<img src="https://github-ads.s3.eu-central-1.amazonaws.com/:package_name.jpg?t=1" width="419px" />](https://spatie.be/github-ad-click/:package_name)
 
-We invest a lot of resources into creating [best in class open source packages](https://spatie.be/open-source). You can support us by [buying one of our paid products](https://spatie.be/open-source/support-us).
+---
 
-We highly appreciate you sending us a postcard from your hometown, mentioning which of our package(s) you are using. You'll find our address on [our contact page](https://spatie.be/about-us). We publish all received postcards on [our virtual postcard wall](https://spatie.be/open-source/postcards).
+## Features
+
+- 💳 **Create Payment Orders**: Initiate payments and redirect users to the SixCash payment page.
+- ✅ **Verify Payments**: Verify transaction status using the transaction ID.
+- 🛡 **Type Safety**: Built with TypeScript-like type safety for robust error handling.
+- 🚦 **Error Handling**: Custom exceptions for merchant not found, payment verification failures, and more.
+- 🔒 **Input Validation**: Automatically validates input parameters.
+- 📦 **Laravel Integration**: Fully integrated with Laravel's service container and facades.
+
+---
 
 ## Installation
 
 You can install the package via composer:
 
 ```bash
-composer require :vendor_slug/:package_slug
-```
-
-You can publish and run the migrations with:
-
-```bash
-php artisan vendor:publish --tag=":package_slug-migrations"
-php artisan migrate
+composer require sabitahmadumid/sixcash-laravel
 ```
 
 You can publish the config file with:
 
 ```bash
-php artisan vendor:publish --tag=":package_slug-config"
+php artisan vendor:publish --tag="sixcash-laravel-config"
 ```
 
 This is the contents of the published config file:
 
 ```php
 return [
+    'base_url' => env('SIXCASH_BASE_URL', 'https://api.sixcash.com'),
+    'public_key' => env('SIXCASH_PUBLIC_KEY'),
+    'secret_key' => env('SIXCASH_SECRET_KEY'),
+    'merchant_number' => env('SIXCASH_MERCHANT_NUMBER'),
 ];
 ```
 
-Optionally, you can publish the views using
+Add the following environment variables to your `.env` file:
 
-```bash
-php artisan vendor:publish --tag=":package_slug-views"
+```dotenv
+SIXCASH_BASE_URL=https://api.sixcash.com
+SIXCASH_PUBLIC_KEY=your_public_key
+SIXCASH_SECRET_KEY=your_secret_key
+SIXCASH_MERCHANT_NUMBER=your_merchant_number
 ```
 
 ## Usage
 
+### Initialize the Package
+The package is automatically registered via the service provider. You can start using it immediately.
+
+### Create a Payment Order
+
 ```php
-$variable = new VendorName\Skeleton();
-echo $variable->echoPhrase('Hello, VendorName!');
+use SabitAhmad\SixCash\Facades\SixCash;
+
+try {
+    $amount = 100.50; // Payment amount
+    $callbackUrl = route('payment.callback'); // Callback URL after payment
+    $redirectUrl = SixCash::createPaymentOrder($amount, $callbackUrl);
+
+    // Redirect the user to the payment page
+    return redirect()->away($redirectUrl);
+} catch (\SabitAhmad\SixCash\Exceptions\MerchantNotFoundException $e) {
+    return back()->withErrors(['error' => 'Merchant not found']);
+} catch (\Exception $e) {
+    return back()->withErrors(['error' => $e->getMessage()]);
+}
 ```
 
+### Verify Payment
+
+```php
+use SabitAhmad\SixCash\Facades\SixCash;
+
+try {
+    $transactionId = request('transaction_id'); // Get transaction ID from request
+    $payment = SixCash::verifyPayment($transactionId);
+
+    if ($payment['is_paid']) {
+        // Handle successful payment
+        return response()->json(['message' => 'Payment successful']);
+    } else {
+        // Handle pending or failed payment
+        return response()->json(['message' => 'Payment not completed']);
+    }
+} catch (\SabitAhmad\SixCash\Exceptions\PaymentVerificationException $e) {
+    return response()->json(['error' => $e->getMessage()], 422);
+}
+```
+
+### Payment Record Structure
+
+```php
+[
+'id' => 'string', // Payment ID
+'merchant_id' => 'int', // Merchant ID
+'user_id' => 'int', // User ID
+'transaction_id' => 'string', // Transaction ID
+'amount' => 'float', // Payment amount
+'is_paid' => 'bool', // Payment status
+'expires_at' => 'Carbon', // Expiration date
+'created_at' => 'Carbon' // Creation date
+]
+```
+## Error Handling
+
+```php
+try {
+    $redirectUrl = SixCash::createPaymentOrder(100, route('payment.callback'));
+} catch (\SabitAhmad\SixCash\Exceptions\MerchantNotFoundException $e) {
+    // Handle merchant not found
+} catch (\SabitAhmad\SixCash\Exceptions\PaymentVerificationException $e) {
+    // Handle verification failure
+} catch (\Exception $e) {
+    // Handle other errors
+}
+```
+
+
+
 ## Testing
+To run the tests, use the following command:
 
 ```bash
 composer test
 ```
+
+
+## Support
+
+For any issues, feature requests, or development assistance, feel free to contact me on Discord:
+Username: **xcal_ibur**
 
 ## Changelog
 
@@ -85,7 +160,7 @@ Please review [our security policy](../../security/policy) on how to report secu
 
 ## Credits
 
-- [:author_name](https://github.com/:author_username)
+- [Sabit Ahmad](https://github.com/sabitahmadumid)
 - [All Contributors](../../contributors)
 
 ## License
