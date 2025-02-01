@@ -2,9 +2,9 @@
 
 # SixCash Laravel Package
 
-[![Latest Version](https://img.shields.io/packagist/v/sabitahmad/sixcash-laravel.svg)](https://packagist.org/packages/sabitahmad/sixcash-laravel)
-[![License](https://img.shields.io/packagist/l/sabitahmad/sixcash-laravel.svg)](https://packagist.org/packages/sabitahmad/sixcash-laravel)
-[![Total Downloads](https://img.shields.io/packagist/dt/sabitahmad/sixcash-laravel.svg)](https://packagist.org/packages/sabitahmad/sixcash-laravel)
+[![Latest Version](https://img.shields.io/packagist/v/sabitahmadumid/sixcash-laravel.svg)](https://packagist.org/packages/sabitahmadumid/sixcash-laravel)
+[![License](https://img.shields.io/packagist/l/sabitahmadumid/sixcash-laravel.svg)](https://packagist.org/packages/sabitahmadumid/sixcash-laravel)
+[![Total Downloads](https://img.shields.io/packagist/dt/sabitahmadumid/sixcash-laravel.svg)](https://packagist.org/packages/sabitahmadumid/sixcash-laravel)
 
 This is where your description should go. Limit it to a paragraph or two. Consider adding a small example.
 
